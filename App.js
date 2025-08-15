@@ -9,10 +9,15 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Image } from 'react-native';
-import calendar from './assets/calendar.png';
-import sunBlack from './assets/sunBlack.png';
+import calendar from './assets/calendar-alt-svgrepo-com.png';
+
+import sunVector from './assets/sun-svgrepo-com(3).png';
 
 import { LocationProvider } from './LocationContext';
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 SplashScreen.preventAutoHideAsync();
 
@@ -24,7 +29,7 @@ const HomeTabs = createBottomTabNavigator({
         title: 'Current',
         tabBarIcon: ({ color, size }) => (
           <Image
-            source={sunBlack}
+            source={sunVector}
             // tintColor={color}
             style={{
               width: size,
@@ -32,6 +37,14 @@ const HomeTabs = createBottomTabNavigator({
             }}
           />
         ),
+        tabBarStyle: {
+          backgroundColor: '#021d2cff',
+          borderTopWidth: 0,
+          paddingTop: 10,
+          paddingBottom: 10,
+        },
+        headerStyle: { backgroundColor: '#021d2cff' },
+        headerTintColor: '#fff',
       },
     },
     FiveDayForecast: {
@@ -48,6 +61,12 @@ const HomeTabs = createBottomTabNavigator({
             }}
           />
         ),
+        tabBarStyle: {
+          backgroundColor: '#021d2cff',
+          borderTopWidth: 0,
+        },
+        headerStyle: { backgroundColor: '#021d2cff' },
+        headerTintColor: '#fff',
       },
     },
   },
@@ -78,8 +97,10 @@ const Navigation = createStaticNavigation(RootStack);
 
 export default function App() {
   return (
-    <LocationProvider>
-      <Navigation />
-    </LocationProvider>
+    <QueryClientProvider client={queryClient}>
+      <LocationProvider>
+        <Navigation />
+      </LocationProvider>
+    </QueryClientProvider>
   );
 }

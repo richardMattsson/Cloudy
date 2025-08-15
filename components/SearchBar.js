@@ -18,6 +18,7 @@ export default function SearchBar() {
           response.data.results[0].latitude,
           response.data.results[0].longitude,
         ]);
+        setCity('');
       }
     } catch (error) {
       console.error(error);
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    gap: 40,
+    gap: 20,
   },
 
   textInput: {
@@ -57,6 +58,8 @@ const styles = StyleSheet.create({
     borderColor: '#000000',
     borderWidth: 1,
     padding: 10,
-    marginBottom: 5,
+    // marginBottom: 5,
+    backgroundColor: '#fff',
+    // borderRadius: 10,
   },
 });
