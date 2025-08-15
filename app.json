@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "labb2weatherapp",
-    "slug": "labb2weatherapp",
+    "name": "CLOUDY",
+    "slug": "CLOUDY",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/sunIcon.png",
+    "icon": "./assets/cloud.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/cloud.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/cloud.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true
