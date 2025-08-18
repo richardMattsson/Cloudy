@@ -1,25 +1,32 @@
 import HomeScreen from './screens/HomeScreen';
 import FiveDayForecast from './screens/FiveDayForecastScreen';
 
-import * as SplashScreen from 'expo-splash-screen';
-
 import { createStaticNavigation } from '@react-navigation/native';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Image } from 'react-native';
+import { Image, Settings } from 'react-native';
 import calendar from './assets/calendar-alt-svgrepo-com.png';
 
 import sunVector from './assets/sun-svgrepo-com(3).png';
 
 import { LocationProvider } from './LocationContext';
+import { TempUnitProvider } from './TempUnitContext';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const queryClient = new QueryClient();
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+
+// SplashScreen.setOptions({
+//   duration: 1000,
+//   fade: true,
+// });
 
 SplashScreen.preventAutoHideAsync();
+
+const queryClient = new QueryClient();
 
 const HomeTabs = createBottomTabNavigator({
   screens: {
@@ -47,6 +54,7 @@ const HomeTabs = createBottomTabNavigator({
         headerTintColor: '#fff',
       },
     },
+
     FiveDayForecast: {
       screen: FiveDayForecast,
       options: {
@@ -64,8 +72,12 @@ const HomeTabs = createBottomTabNavigator({
         tabBarStyle: {
           backgroundColor: '#021d2cff',
           borderTopWidth: 0,
+          paddingTop: 10,
+          paddingBottom: 10,
         },
-        headerStyle: { backgroundColor: '#021d2cff' },
+        headerStyle: {
+          backgroundColor: '#021d2cff',
+        },
         headerTintColor: '#fff',
       },
     },
@@ -75,7 +87,7 @@ const HomeTabs = createBottomTabNavigator({
 const RootStack = createNativeStackNavigator({
   // initialRouteName: 'Current',
   screenOptions: {
-    headerStyle: { backgroundColor: 'lightblue' },
+    headerStyle: { backgroundColor: '#021d2cff' },
   },
   screens: {
     HomeTabs: {
@@ -96,10 +108,19 @@ const RootStack = createNativeStackNavigator({
 const Navigation = createStaticNavigation(RootStack);
 
 export default function App() {
+  // useEffect(() => {
+  //   const hideSplashScreen = async () => {
+  //     await new Promise((res) => setTimeout(res, 4000));
+  //     await SplashScreen.hideAsync();
+  //   };
+  //   hideSplashScreen();
+  // }, []);
   return (
     <QueryClientProvider client={queryClient}>
       <LocationProvider>
-        <Navigation />
+        <TempUnitProvider>
+          <Navigation />
+        </TempUnitProvider>
       </LocationProvider>
     </QueryClientProvider>
   );
