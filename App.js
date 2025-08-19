@@ -1,6 +1,7 @@
 import HomeScreen from './screens/HomeScreen';
 import FiveDayForecast from './screens/FiveDayForecastScreen';
 import SettingsButton from './components/SettingsButton';
+import FavoriteComp from './components/FavoriteComp';
 
 import { createStaticNavigation } from '@react-navigation/native';
 
@@ -20,6 +21,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
+import { FavoriteProvider } from './FavoriteContext';
 
 // SplashScreen.setOptions({
 //   duration: 1000,
@@ -35,7 +37,10 @@ const HomeTabs = createBottomTabNavigator({
     Home: {
       screen: HomeScreen,
       options: {
+        headerRight: () => <SettingsButton />,
+        headerLeft: () => <FavoriteComp />,
         title: 'Current',
+        headerTitleAlign: 'center',
         tabBarIcon: ({ color, size }) => (
           <Image
             source={sunVector}
@@ -60,7 +65,10 @@ const HomeTabs = createBottomTabNavigator({
     FiveDayForecast: {
       screen: FiveDayForecast,
       options: {
+        headerRight: () => <SettingsButton />,
+        headerLeft: () => <FavoriteComp />,
         title: '5-day forecast',
+        headerTitleAlign: 'center',
         tabBarIcon: ({ color, size }) => (
           <Image
             source={calendar}
@@ -95,7 +103,9 @@ const RootStack = createNativeStackNavigator({
     HomeTabs: {
       screen: HomeTabs,
       options: {
+        headerShown: false,
         headerRight: () => <SettingsButton />,
+        headerLeft: () => <FavoriteComp />,
       },
     },
     // FiveDayForecast: {
@@ -120,7 +130,9 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <LocationProvider>
         <TempUnitProvider>
-          <Navigation />
+          <FavoriteProvider>
+            <Navigation />
+          </FavoriteProvider>
         </TempUnitProvider>
       </LocationProvider>
     </QueryClientProvider>

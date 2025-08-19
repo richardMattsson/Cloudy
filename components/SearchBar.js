@@ -15,10 +15,11 @@ export default function SearchBar() {
       );
 
       if (response.data) {
-        setLocation([
-          response.data.results[0].latitude,
-          response.data.results[0].longitude,
-        ]);
+        setLocation({
+          name: response.data.results[0].name,
+          lat: response.data.results[0].latitude,
+          lon: response.data.results[0].longitude,
+        });
         setCity('');
       }
     } catch (error) {

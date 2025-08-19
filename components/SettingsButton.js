@@ -12,7 +12,7 @@ import cog from '../assets/cog-white.png';
 function SettingsButton() {
   const { tempUnit, setTempUnit } = useContext(TempUnitContext);
 
-  const onPress = () =>
+  const onPressIOS = () => {
     ActionSheetIOS.showActionSheetWithOptions(
       {
         options: [
@@ -35,12 +35,14 @@ function SettingsButton() {
         }
       }
     );
+  };
+
+  const onPressAndroid = () => {};
+
   return (
-    Platform.OS === 'ios' && (
-      <Pressable onPress={onPress}>
-        <Image style={styles.cogImage} source={cog} />
-      </Pressable>
-    )
+    <Pressable onPress={onPressIOS}>
+      <Image style={styles.cogImage} source={cog} />
+    </Pressable>
   );
 }
 
@@ -50,6 +52,5 @@ const styles = StyleSheet.create({
   cogImage: {
     width: 30,
     height: 30,
-    marginTop: 50,
   },
 });

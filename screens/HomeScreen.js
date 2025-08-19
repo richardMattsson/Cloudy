@@ -31,7 +31,7 @@ export default function HomeScreen() {
 
   const fetchCurrentWeather = async (location) => {
     const response = await axios.get(
-      `https://api.openweathermap.org/data/2.5/weather?lat=${location[0]}&lon=${location[1]}&appid=34ec35da331d9646a7524278373c16a0`
+      `https://api.openweathermap.org/data/2.5/weather?lat=${location.lat}&lon=${location.lon}&appid=34ec35da331d9646a7524278373c16a0`
     );
 
     await SplashScreen.hideAsync();
