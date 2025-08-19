@@ -1,5 +1,6 @@
 import HomeScreen from './screens/HomeScreen';
 import FiveDayForecast from './screens/FiveDayForecastScreen';
+import SettingsButton from './components/SettingsButton';
 
 import { createStaticNavigation } from '@react-navigation/native';
 
@@ -8,6 +9,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Image, Settings } from 'react-native';
 import calendar from './assets/calendar-alt-svgrepo-com.png';
+import cog from './assets/cog-white.png';
 
 import sunVector from './assets/sun-svgrepo-com(3).png';
 
@@ -93,8 +95,7 @@ const RootStack = createNativeStackNavigator({
     HomeTabs: {
       screen: HomeTabs,
       options: {
-        title: 'Current',
-        headerShown: false,
+        headerRight: () => <SettingsButton />,
       },
     },
     // FiveDayForecast: {

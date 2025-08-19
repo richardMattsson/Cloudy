@@ -1,12 +1,13 @@
 import { useContext } from 'react';
 import {
-  View,
   Pressable,
-  Text,
+  Image,
   StyleSheet,
+  Platform,
   ActionSheetIOS,
 } from 'react-native';
 import { TempUnitContext } from '../TempUnitContext';
+import cog from '../assets/cog-white.png';
 
 function SettingsButton() {
   const { tempUnit, setTempUnit } = useContext(TempUnitContext);
@@ -15,9 +16,11 @@ function SettingsButton() {
     ActionSheetIOS.showActionSheetWithOptions(
       {
         options: [
-          'Cancel',
+          'Avbryt',
 
-          tempUnit === 'celsius' ? 'Change to Fahrenheit' : 'Change to Celsius',
+          tempUnit === 'celsius'
+            ? 'Ändra till Fahrenheit'
+            : 'Ändra till Celsius',
           // 'Reset',
         ],
         // destructiveButtonIndex: 1,
@@ -33,24 +36,20 @@ function SettingsButton() {
       }
     );
   return (
-    <View style={styles.containerSettingBtn}>
-      <Pressable onPress={onPress} style={styles.settingBtn}>
-        <Text style={styles.textSearchButton}>Inställningar</Text>
+    Platform.OS === 'ios' && (
+      <Pressable onPress={onPress}>
+        <Image style={styles.cogImage} source={cog} />
       </Pressable>
-    </View>
+    )
   );
 }
 
 export default SettingsButton;
 
 const styles = StyleSheet.create({
-  containerSettingBtn: {
-    alignItems: 'center',
-  },
-  settingBtn: {
-    padding: 10,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    width: '30%',
+  cogImage: {
+    width: 30,
+    height: 30,
+    marginTop: 50,
   },
 });

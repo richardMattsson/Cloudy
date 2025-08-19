@@ -1,5 +1,4 @@
-import SearchBar from '../components/SearchBar';
-import SettingsButton from '../components/SettingsButton';
+import KeyboardAvoidingViewComp from '../components/KeyboardAvoidingComp';
 
 import { StatusBar } from 'expo-status-bar';
 import {
@@ -8,13 +7,9 @@ import {
   View,
   ScrollView,
   ActivityIndicator,
-  Platform,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-  Keyboard,
 } from 'react-native';
 
-import { useState, useEffect, useContext } from 'react';
+import { useContext } from 'react';
 import axios from 'axios';
 
 import { LocationContext } from '../LocationContext';
@@ -178,77 +173,66 @@ export default function FiveDayForecast() {
   //   }
   // }
   return (
-    <>
+    <KeyboardAvoidingViewComp>
       <ScrollView style={[styles.container, { minHeight: '100vh' }]}>
-        <StatusBar style="light" />
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.container}
-        >
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            {tempData && (
-              <View style={styles.container}>
-                <Text style={[styles.header, styles.textStyle]}>
-                  {fivedaysforecast.city.name}
-                </Text>
-                <View style={styles.wrapper}>
-                  <LineChart
-                    data={tempData}
-                    yAxisLabelSuffix="°"
-                    xAxisTextNumberOfLines={2}
-                    areaChart
-                    curved
-                    hideDataPoints
-                    yAxisTextStyle={{ color: '#fff' }}
-                    color1="rgba(236, 148, 16, 1)"
-                    startFillColor="#fb8500"
-                    startOpacity={0.8}
-                    endFillColor="rgb(203, 241, 250)"
-                    endOpacity={0.3}
-                    xAxisLabelTextStyle={{
-                      textAlign: 'center',
-                      flexWrap: 'wrap',
-                      color: '#fff',
-                    }}
-                  />
-                  <Text style={styles.textStyle}>
-                    Temperature, {tempUnit === 'celsius' ? 'C°' : 'F°'}
-                  </Text>
-                </View>
-                <View style={styles.wrapper}>
-                  <LineChart
-                    data={gustData}
-                    data2={windData}
-                    xAxisTextNumberOfLines={2}
-                    areaChart
-                    curved
-                    hideDataPoints
-                    color1="#977dbbff"
-                    color2="#6f31c7ff"
-                    startFillColor1="#d7d2ddff"
-                    startFillColor2="#8338ec"
-                    startOpacity={0.9}
-                    endOpacity={0.2}
-                    endFillColor="#cebee4ff"
-                    yAxisTextStyle={{ color: '#fff' }}
-                    xAxisLabelTextStyle={{
-                      textAlign: 'center',
-                      flexWrap: 'wrap',
-                      color: '#fff',
-                    }}
-                  />
-                  <Text style={styles.textStyle}>Wind, m/s, Gust m/s</Text>
-                </View>
-                <View style={styles.searchBar}>
-                  <SearchBar />
-                </View>
-                {Platform.OS === 'ios' && <SettingsButton />}
-              </View>
-            )}
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+        {tempData && (
+          <View style={styles.container}>
+            <StatusBar style="light" />
+            <Text style={[styles.header, styles.textStyle]}>
+              {fivedaysforecast.city.name}
+            </Text>
+            <View style={styles.wrapper}>
+              <LineChart
+                data={tempData}
+                yAxisLabelSuffix="°"
+                xAxisTextNumberOfLines={2}
+                areaChart
+                curved
+                hideDataPoints
+                yAxisTextStyle={{ color: '#fff' }}
+                color1="rgba(236, 148, 16, 1)"
+                startFillColor="#fb8500"
+                startOpacity={0.8}
+                endFillColor="rgb(203, 241, 250)"
+                endOpacity={0.3}
+                xAxisLabelTextStyle={{
+                  textAlign: 'center',
+                  flexWrap: 'wrap',
+                  color: '#fff',
+                }}
+              />
+              <Text style={styles.textStyle}>
+                Temperature, {tempUnit === 'celsius' ? 'C°' : 'F°'}
+              </Text>
+            </View>
+            <View style={styles.wrapper}>
+              <LineChart
+                data={gustData}
+                data2={windData}
+                xAxisTextNumberOfLines={2}
+                areaChart
+                curved
+                hideDataPoints
+                color1="#977dbbff"
+                color2="#6f31c7ff"
+                startFillColor1="#d7d2ddff"
+                startFillColor2="#8338ec"
+                startOpacity={0.9}
+                endOpacity={0.2}
+                endFillColor="#cebee4ff"
+                yAxisTextStyle={{ color: '#fff' }}
+                xAxisLabelTextStyle={{
+                  textAlign: 'center',
+                  flexWrap: 'wrap',
+                  color: '#fff',
+                }}
+              />
+              <Text style={styles.textStyle}>Wind, m/s, Gust m/s</Text>
+            </View>
+          </View>
+        )}
       </ScrollView>
-    </>
+    </KeyboardAvoidingViewComp>
   );
 }
 
@@ -258,14 +242,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#021d2cff',
   },
   wrapper: {
-    marginBottom: 20,
     padding: 10,
   },
 
   header: {
-    fontSize: 35,
-    marginBottom: 5,
-    padding: 20,
+    fontSize: 30,
+    padding: 10,
     textAlign: 'center',
   },
   searchBar: { margin: 20, marginBottom: 30 },

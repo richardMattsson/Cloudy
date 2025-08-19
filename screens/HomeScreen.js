@@ -1,22 +1,16 @@
 import SearchBar from '../components/SearchBar';
-import SettingsButton from '../components/SettingsButton';
+import KeyboardAvoidingViewComp from '../components/KeyboardAvoidingComp';
 
 import { StatusBar } from 'expo-status-bar';
 import {
   StyleSheet,
   Text,
-  Platform,
   View,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-  Keyboard,
   ImageBackground,
   ActivityIndicator,
-  DrawerLayoutAndroid,
 } from 'react-native';
-import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { useState, useEffect, useRef, useContext } from 'react';
+import { useContext } from 'react';
 import axios from 'axios';
 import { LocationContext } from '../LocationContext';
 import { TempUnitContext } from '../TempUnitContext';
@@ -28,21 +22,12 @@ import snow from '../assets/snow.jpg';
 import thunderstorm from '../assets/thunderstorm.jpg';
 
 import { useQuery } from '@tanstack/react-query';
-// import { Button } from '@react-navigation/elements';
 
 import * as SplashScreen from 'expo-splash-screen';
-// SplashScreen.preventAutoHideAsync();
 
 export default function HomeScreen() {
   const { location } = useContext(LocationContext);
-  const { tempUnit, setTempUnit } = useContext(TempUnitContext);
-
-  // const [tempUnit, setTempUnit] = useState('celsius');
-
-  // const drawer = useRef(null);
-
-  // const [currentWeather, setCurrentWeather] = useState(null);
-  // const [backImg, setBackImg] = useState(clear);
+  const { tempUnit } = useContext(TempUnitContext);
 
   const fetchCurrentWeather = async (location) => {
     const response = await axios.get(
@@ -84,12 +69,6 @@ export default function HomeScreen() {
     }
   };
 
-  // useEffect(() => {
-  //   if (currentWeather) {
-  //     SplashScreen.hideAsync();
-  //   }
-  // }, [currentWeather]);
-
   if (isLoading) return <ActivityIndicator size="large" />;
   if (error) return <Text>Error: {error.message}</Text>;
 
@@ -98,12 +77,6 @@ export default function HomeScreen() {
   const now = new Date();
   const currentTime = now.toLocaleTimeString();
 
-  // if (tempUnit === 'celsius') {
-  //   setMainTemp((currentWeather.main.temp - 273.15).toFixed(1) + '°');
-  // } else {
-  //   setMainTemp(currentWeather.main.temp.toFixed(1));
-  // }
-
   let weatherData;
   if (currentWeather) {
     weatherData = [
@@ -111,9 +84,9 @@ export default function HomeScreen() {
       currentTime,
       currentWeather.weather[0].main,
       tempUnit === 'celsius'
-        ? (currentWeather.main.temp - 273.15).toFixed(1) + 'C°'
+        ? (currentWeather.main.temp - 273.15).toFixed(1) + ' C°'
         : (((currentWeather.main.temp - 273.15) * 9) / 5 + 32).toFixed(1) +
-          'F°',
+          ' F°',
     ];
   }
 
@@ -193,66 +166,47 @@ export default function HomeScreen() {
   //   );
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-        {/* <DrawerLayoutAndroid
-          ref={drawer}
-          drawerWidth={300}
-          drawerPosition="left"
-          renderNavigationView={navigationView}
-        > */}
+    <KeyboardAvoidingViewComp>
+      <View style={styles.container}>
         <StatusBar style="light" />
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.container}
-        >
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.container}>
-              {currentWeather && (
-                <ImageBackground
-                  resizeMode="cover"
-                  style={[
-                    styles.image,
-                    {
-                      justifyContent: 'center',
-                    },
-                  ]}
-                  source={backImg}
-                >
-                  <View
-                    style={[
-                      styles.container,
-                      { justifyContent: 'space-around' },
-                    ]}
-                  >
-                    <View style={{ gap: 10 }}>
-                      {weatherData.map((data, index) => (
-                        <Text key={index} style={styles.header}>
-                          {data}
-                        </Text>
-                      ))}
-                    </View>
+        {currentWeather && (
+          <ImageBackground
+            resizeMode="cover"
+            style={[
+              styles.image,
+              {
+                justifyContent: 'center',
+              },
+            ]}
+            source={backImg}
+          >
+            <View
+              style={[styles.container, { justifyContent: 'space-around' }]}
+            >
+              <View style={{ gap: 10 }}>
+                {weatherData.map((data, index) => (
+                  <Text key={index} style={styles.header}>
+                    {data}
+                  </Text>
+                ))}
+              </View>
 
-                    {/* {Platform.OS === 'android' && (
+              {/* {Platform.OS === 'android' && (
                       <Button
                         title="Open drawer"
                         onPress={() => drawer.current.openDrawer()}
                       />
                     )} */}
 
-                    <View style={styles.searchBar}>
-                      <SearchBar />
-                    </View>
-                  </View>
-                  {Platform.OS === 'ios' && <SettingsButton />}
-                </ImageBackground>
-              )}
+              <View style={styles.searchBar}>
+                <SearchBar />
+              </View>
             </View>
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
-        {/* </DrawerLayoutAndroid> */}
-      </SafeAreaView>
-    </SafeAreaProvider>
+            {/* {Platform.OS === 'ios' && <SettingsButton />} */}
+          </ImageBackground>
+        )}
+      </View>
+    </KeyboardAvoidingViewComp>
   );
 }
 
@@ -262,28 +216,21 @@ const styles = StyleSheet.create({
   },
 
   inner: {
-    // padding: 20,
     flex: 1,
-    // borderWidth: 2,
     justifyContent: 'flex-start',
     gap: 20,
-    // justifyContent: 'space-evenly',
-    // backgroundColor: 'none',
   },
   textContainer: {},
   header: {
     fontSize: 35,
     marginBottom: 5,
     color: '#fff',
-    // borderWidth: 1,
   },
   searchBar: { marginBottom: 10 },
   searchButton: {
     borderWidth: 1,
-    // borderRadius: 10,
     borderColor: 'white',
     backgroundColor: 'white',
-    // paddingTop: 0,
     width: '50%',
     paddingLeft: 15,
     paddingRight: 15,
@@ -302,12 +249,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '30%',
   },
-  // textInput: {
-  //   height: 40,
-  //   borderColor: '#000000',
-  //   borderWidth: 1,
-  //   padding: 10,
-  //   marginBottom: 5,
-  // },
   image: { flex: 1, padding: 24 },
 });

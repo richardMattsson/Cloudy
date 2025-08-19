@@ -45,7 +45,7 @@ export default function SearchBar() {
     <View style={styles.container}>
       <TextInput
         style={styles.textInput}
-        placeholder="Sök Stad"
+        placeholder="Stad"
         placeholderTextColor="#000"
         onChangeText={setCity}
         value={city}
@@ -65,10 +65,8 @@ const styles = StyleSheet.create({
 
   searchButton: {
     borderWidth: 1,
-    // borderRadius: 10,
     borderColor: 'white',
     backgroundColor: 'white',
-    // paddingTop: 0,
     paddingLeft: 15,
     paddingRight: 15,
     justifyContent: 'center',
@@ -81,13 +79,8 @@ const styles = StyleSheet.create({
   textInput: {
     flexGrow: 1,
     height: 40,
-    // borderColor: '#000000',
-    // borderWidth: 1,
     fontSize: 16,
     padding: 10,
-    // marginBottom: 5,
     backgroundColor: '#ffffffff',
-
-    // borderRadius: 10,
   },
 });
