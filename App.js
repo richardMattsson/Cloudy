@@ -56,6 +56,7 @@ const HomeTabs = createBottomTabNavigator({
           borderTopWidth: 0,
           paddingTop: 10,
           paddingBottom: 10,
+          height: 90,
         },
         headerStyle: { backgroundColor: '#021d2cff', height: 125 },
         headerTintColor: '#fff',
@@ -84,6 +85,7 @@ const HomeTabs = createBottomTabNavigator({
           borderTopWidth: 0,
           paddingTop: 10,
           paddingBottom: 10,
+          height: 90,
         },
         headerStyle: {
           backgroundColor: '#021d2cff',
@@ -115,6 +117,7 @@ const HomeTabs = createBottomTabNavigator({
           borderTopWidth: 0,
           paddingTop: 10,
           paddingBottom: 10,
+          height: 90,
         },
         headerStyle: {
           backgroundColor: '#021d2cff',
