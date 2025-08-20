@@ -1,12 +1,19 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { StyleSheet, TextInput, View, Pressable, Text } from 'react-native';
-import { LocationContext } from '../LocationContext';
+import { LocationContext } from '../contexts/LocationContext';
 
 import axios from 'axios';
 
-export default function SearchBar() {
+export default function SearchBar({ cityName }) {
   const [city, setCity] = useState('');
   const { setLocation } = useContext(LocationContext);
+
+  useEffect(() => {
+    if (cityName) {
+      locationSearch(cityName);
+    }
+    cityName = '';
+  }, [cityName]);
 
   async function locationSearch(cityName) {
     try {

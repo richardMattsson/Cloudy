@@ -12,8 +12,8 @@ import {
 import { useContext } from 'react';
 import axios from 'axios';
 
-import { LocationContext } from '../LocationContext';
-import { TempUnitContext } from '../TempUnitContext';
+import { LocationContext } from '../contexts/LocationContext';
+import { TempUnitContext } from '../contexts/TempUnitContext';
 
 import { LineChart } from 'react-native-gifted-charts';
 
@@ -30,7 +30,7 @@ export default function FiveDayForecast() {
 
   async function getForecast(location) {
     const response = await axios.get(
-      `https://api.openweathermap.org/data/2.5/forecast?lat=${location[0]}&lon=${location[1]}&appid=34ec35da331d9646a7524278373c16a0`
+      `https://api.openweathermap.org/data/2.5/forecast?lat=${location.lat}&lon=${location.lon}&appid=34ec35da331d9646a7524278373c16a0`
     );
     return response.data;
   }
@@ -45,7 +45,19 @@ export default function FiveDayForecast() {
     enabled: !!location,
   });
 
-  if (isLoading) return <ActivityIndicator size="large" />;
+  if (isLoading)
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: '#021d2cff',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <ActivityIndicator size="large" />
+      </View>
+    );
   if (error) return <Text>Error: {error.message}</Text>;
 
   const getTempData = (forecast) => {

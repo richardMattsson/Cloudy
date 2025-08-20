@@ -10,10 +10,10 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import axios from 'axios';
-import { LocationContext } from '../LocationContext';
-import { TempUnitContext } from '../TempUnitContext';
+import { LocationContext } from '../contexts/LocationContext';
+import { TempUnitContext } from '../contexts/TempUnitContext';
 import rain from '../assets/rain.jpg';
 import mist from '../assets/mist.jpg';
 import clear from '../assets/clear.jpg';
@@ -25,16 +25,23 @@ import { useQuery } from '@tanstack/react-query';
 
 import * as SplashScreen from 'expo-splash-screen';
 
-export default function HomeScreen() {
+export default function HomeScreen({ route }) {
   const { location } = useContext(LocationContext);
   const { tempUnit } = useContext(TempUnitContext);
+
+  let cityName;
+
+  if (route.params) {
+    cityName = route.params.cityName;
+    route.params.cityName = '';
+  }
 
   const fetchCurrentWeather = async (location) => {
     const response = await axios.get(
       `https://api.openweathermap.org/data/2.5/weather?lat=${location.lat}&lon=${location.lon}&appid=34ec35da331d9646a7524278373c16a0`
     );
 
-    await SplashScreen.hideAsync();
+    // await SplashScreen.hideAsync();
 
     return response.data;
   };
@@ -69,7 +76,19 @@ export default function HomeScreen() {
     }
   };
 
-  if (isLoading) return <ActivityIndicator size="large" />;
+  if (isLoading)
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: '#021d2cff',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <ActivityIndicator size="large" />
+      </View>
+    );
   if (error) return <Text>Error: {error.message}</Text>;
 
   const backImg = getBackImg(currentWeather.weather[0].main);
@@ -80,7 +99,7 @@ export default function HomeScreen() {
   let weatherData;
   if (currentWeather) {
     weatherData = [
-      `${currentWeather.name}, ${currentWeather.sys.country}`,
+      `${location.name}, ${currentWeather.sys.country}`,
       currentTime,
       currentWeather.weather[0].main,
       tempUnit === 'celsius'
@@ -88,101 +107,29 @@ export default function HomeScreen() {
         : (((currentWeather.main.temp - 273.15) * 9) / 5 + 32).toFixed(1) +
           ' F°',
     ];
+
+    SplashScreen.hideAsync();
   }
-
-  // useEffect(() => {
-  //   async function getCurrentWeather() {
-  //     try {
-  //       const response = await axios.get(
-  //         `https://api.openweathermap.org/data/2.5/weather?lat=${location[0]}&lon=${location[1]}&appid=34ec35da331d9646a7524278373c16a0`
-  //       );
-
-  //       setCurrentWeather(response.data);
-  //       switch (response.data.weather[0].main) {
-  //         case 'Clear':
-  //           setBackImg(clear);
-  //           break;
-
-  //         case 'Rain':
-  //           setBackImg(rain);
-  //           break;
-
-  //         case 'Drizzle':
-  //           setBackImg(rain);
-  //           break;
-
-  //         case 'Snow':
-  //           setBackImg(snow);
-  //           break;
-
-  //         case 'Thunderstorm':
-  //           setBackImg(thunderstorm);
-  //           break;
-
-  //         case 'Mist':
-  //           setBackImg(mist);
-  //           break;
-  //         case 'Clouds':
-  //           setBackImg(clouds);
-  //           break;
-
-  //         default:
-  //           setBackImg(clear);
-  //       }
-  //       await SplashScreen.hideAsync();
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   }
-  //   getCurrentWeather();
-  // }, [location]);
-
-  // const navigationView = () => (
-  //   <SafeAreaView>
-  //     <Text>Profil</Text>
-  //   </SafeAreaView>
-  // );
-
-  // const onPress = () =>
-  //   ActionSheetIOS.showActionSheetWithOptions(
-  //     {
-  //       options: [
-  //         'Cancel',
-
-  //         tempUnit === 'celsius' ? 'Change to Fahrenheit' : 'Change to Celsius',
-  //         // 'Reset',
-  //       ],
-  //       // destructiveButtonIndex: 1,
-  //       cancelButtonIndex: 0,
-  //       userInterfaceStyle: 'dark',
-  //     },
-  //     (buttonIndex) => {
-  //       if (buttonIndex === 0) {
-  //         // cancel action
-  //       } else if (buttonIndex === 1) {
-  //         setTempUnit(tempUnit === 'celsius' ? 'fahrenheit' : 'celsius');
-  //       }
-  //     }
-  //   );
 
   return (
     <KeyboardAvoidingViewComp>
       <View style={styles.container}>
-        <StatusBar style="light" />
         {currentWeather && (
           <ImageBackground
             resizeMode="cover"
-            style={[
-              styles.image,
-              {
-                justifyContent: 'center',
-              },
-            ]}
+            style={styles.image}
             source={backImg}
           >
             <View
-              style={[styles.container, { justifyContent: 'space-around' }]}
+              style={[
+                styles.container,
+                {
+                  justifyContent: 'space-evenly',
+                  marginBottom: 100,
+                },
+              ]}
             >
+              <StatusBar style="light" />
               <View style={{ gap: 10 }}>
                 {weatherData.map((data, index) => (
                   <Text key={index} style={styles.header}>
@@ -191,18 +138,10 @@ export default function HomeScreen() {
                 ))}
               </View>
 
-              {/* {Platform.OS === 'android' && (
-                      <Button
-                        title="Open drawer"
-                        onPress={() => drawer.current.openDrawer()}
-                      />
-                    )} */}
-
               <View style={styles.searchBar}>
-                <SearchBar />
+                <SearchBar cityName={cityName} />
               </View>
             </View>
-            {/* {Platform.OS === 'ios' && <SettingsButton />} */}
           </ImageBackground>
         )}
       </View>

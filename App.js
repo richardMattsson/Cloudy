@@ -1,5 +1,6 @@
 import HomeScreen from './screens/HomeScreen';
 import FiveDayForecast from './screens/FiveDayForecastScreen';
+import Favorites from './screens/FavoritesScreen';
 import SettingsButton from './components/SettingsButton';
 import FavoriteComp from './components/FavoriteComp';
 
@@ -8,20 +9,19 @@ import { createStaticNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Image, Settings } from 'react-native';
+import { Image } from 'react-native';
 import calendar from './assets/calendar-alt-svgrepo-com.png';
-import cog from './assets/cog-white.png';
 
 import sunVector from './assets/sun-svgrepo-com(3).png';
 
-import { LocationProvider } from './LocationContext';
-import { TempUnitProvider } from './TempUnitContext';
+import starTrue from './assets/star-true.png';
+
+import { LocationProvider } from './contexts/LocationContext';
+import { TempUnitProvider } from './contexts/TempUnitContext';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import { FavoriteProvider } from './FavoriteContext';
 
 // SplashScreen.setOptions({
 //   duration: 1000,
@@ -57,7 +57,7 @@ const HomeTabs = createBottomTabNavigator({
           paddingTop: 10,
           paddingBottom: 10,
         },
-        headerStyle: { backgroundColor: '#021d2cff' },
+        headerStyle: { backgroundColor: '#021d2cff', height: 125 },
         headerTintColor: '#fff',
       },
     },
@@ -66,7 +66,7 @@ const HomeTabs = createBottomTabNavigator({
       screen: FiveDayForecast,
       options: {
         headerRight: () => <SettingsButton />,
-        headerLeft: () => <FavoriteComp />,
+        // headerLeft: () => <FavoriteComp />,
         title: '5-day forecast',
         headerTitleAlign: 'center',
         tabBarIcon: ({ color, size }) => (
@@ -87,6 +87,38 @@ const HomeTabs = createBottomTabNavigator({
         },
         headerStyle: {
           backgroundColor: '#021d2cff',
+          height: 125,
+        },
+        headerTintColor: '#fff',
+      },
+    },
+
+    Favorites: {
+      screen: Favorites,
+      options: {
+        headerRight: () => <SettingsButton />,
+        // headerLeft: () => <FavoriteComp />,
+        title: 'Favorites',
+        headerTitleAlign: 'center',
+        tabBarIcon: ({ color, size }) => (
+          <Image
+            source={starTrue}
+            // tintColor={color}
+            style={{
+              width: size,
+              height: size,
+            }}
+          />
+        ),
+        tabBarStyle: {
+          backgroundColor: '#021d2cff',
+          borderTopWidth: 0,
+          paddingTop: 10,
+          paddingBottom: 10,
+        },
+        headerStyle: {
+          backgroundColor: '#021d2cff',
+          height: 125,
         },
         headerTintColor: '#fff',
       },
@@ -119,20 +151,11 @@ const RootStack = createNativeStackNavigator({
 const Navigation = createStaticNavigation(RootStack);
 
 export default function App() {
-  // useEffect(() => {
-  //   const hideSplashScreen = async () => {
-  //     await new Promise((res) => setTimeout(res, 4000));
-  //     await SplashScreen.hideAsync();
-  //   };
-  //   hideSplashScreen();
-  // }, []);
   return (
     <QueryClientProvider client={queryClient}>
       <LocationProvider>
         <TempUnitProvider>
-          <FavoriteProvider>
-            <Navigation />
-          </FavoriteProvider>
+          <Navigation />
         </TempUnitProvider>
       </LocationProvider>
     </QueryClientProvider>
