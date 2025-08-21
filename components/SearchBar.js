@@ -4,21 +4,21 @@ import { LocationContext } from '../contexts/LocationContext';
 
 import axios from 'axios';
 
-export default function SearchBar({ cityName }) {
+export default function SearchBar() {
   const [city, setCity] = useState('');
   const { setLocation } = useContext(LocationContext);
 
-  useEffect(() => {
-    if (cityName) {
-      locationSearch(cityName);
-    }
-    cityName = '';
-  }, [cityName]);
+  // useEffect(() => {
+  //   if (cityName) {
+  //     locationSearch(cityName);
+  //   }
+  //   cityName = '';
+  // }, [cityName]);
 
   async function locationSearch(cityName) {
     try {
       const response = await axios.get(
-        `https://geocoding-api.open-meteo.com/v1/search?name=${cityName}&count=1&language=en&format=json`
+        `https://geocoding-api.open-meteo.com/v1/search?name=${cityName.trim()}&count=1&language=en&format=json`
       );
 
       if (response.data) {

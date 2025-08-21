@@ -6,8 +6,8 @@ import {
   StyleSheet,
   Text,
   View,
-  ImageBackground,
   ActivityIndicator,
+  ImageBackground,
 } from 'react-native';
 
 import { useContext, useEffect } from 'react';
@@ -25,24 +25,16 @@ import { useQuery } from '@tanstack/react-query';
 
 import * as SplashScreen from 'expo-splash-screen';
 
-export default function HomeScreen({ route }) {
+export default function HomeScreen() {
   const { location } = useContext(LocationContext);
   const { tempUnit } = useContext(TempUnitContext);
-
-  let cityName;
-
-  if (route.params) {
-    cityName = route.params.cityName;
-    route.params.cityName = '';
-  }
 
   const fetchCurrentWeather = async (location) => {
     const response = await axios.get(
       `https://api.openweathermap.org/data/2.5/weather?lat=${location.lat}&lon=${location.lon}&appid=34ec35da331d9646a7524278373c16a0`
     );
 
-    // await SplashScreen.hideAsync();
-
+    await SplashScreen.hideAsync();
     return response.data;
   };
 
@@ -75,6 +67,8 @@ export default function HomeScreen({ route }) {
         return clear;
     }
   };
+  const now = new Date();
+  const currentTime = now.toLocaleTimeString();
 
   if (isLoading)
     return (
@@ -89,12 +83,10 @@ export default function HomeScreen({ route }) {
         <ActivityIndicator size="large" />
       </View>
     );
+
   if (error) return <Text>Error: {error.message}</Text>;
 
   const backImg = getBackImg(currentWeather.weather[0].main);
-
-  const now = new Date();
-  const currentTime = now.toLocaleTimeString();
 
   let weatherData;
   if (currentWeather) {
@@ -107,8 +99,6 @@ export default function HomeScreen({ route }) {
         : (((currentWeather.main.temp - 273.15) * 9) / 5 + 32).toFixed(1) +
           ' F°',
     ];
-
-    SplashScreen.hideAsync();
   }
 
   return (
@@ -139,7 +129,7 @@ export default function HomeScreen({ route }) {
               </View>
 
               <View style={styles.searchBar}>
-                <SearchBar cityName={cityName} />
+                <SearchBar />
               </View>
             </View>
           </ImageBackground>
@@ -160,6 +150,7 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   textContainer: {},
+  fastBackGroundImage: { width: '100%', height: '100%', position: 'absolute' },
   header: {
     fontSize: 35,
     marginBottom: 5,

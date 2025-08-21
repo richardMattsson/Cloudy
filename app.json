@@ -9,6 +9,19 @@
     "newArchEnabled": true,
     "plugins": [
       [
+        "expo-asset",
+        {
+          "assets": [
+            "./assets/rain.jpg",
+            "./assets/mist.jpg",
+            "./assets/clouds.jpg",
+            "./assets/snow.jpg",
+            "./assets/clear.jpg",
+            "./assets/thunderstorm.jpg"
+          ]
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "backgroundColor": "#021d2cff",
@@ -19,7 +32,8 @@
           },
           "imageWidth": 200
         }
-      ]
+      ],
+      "expo-asset"
     ],
     "splash": {
       "image": "./assets/images/splash-icon-dark.png",

@@ -4,7 +4,7 @@ import Favorites from './screens/FavoritesScreen';
 import SettingsButton from './components/SettingsButton';
 import FavoriteComp from './components/FavoriteComp';
 
-import { createStaticNavigation } from '@react-navigation/native';
+import { createStaticNavigation, DefaultTheme } from '@react-navigation/native';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -14,6 +14,10 @@ import calendar from './assets/calendar-alt-svgrepo-com.png';
 
 import sunVector from './assets/sun-svgrepo-com(3).png';
 
+import { useEffect } from 'react';
+
+import { Asset } from 'expo-asset';
+
 import starTrue from './assets/star-true.png';
 
 import { LocationProvider } from './contexts/LocationContext';
@@ -22,11 +26,16 @@ import { TempUnitProvider } from './contexts/TempUnitContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import * as SplashScreen from 'expo-splash-screen';
+import { Background } from '@react-navigation/elements';
 
-// SplashScreen.setOptions({
-//   duration: 1000,
-//   fade: true,
-// });
+const defaultTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: '#021d2cff',
+    primary: '#fff',
+  },
+};
 
 SplashScreen.preventAutoHideAsync();
 
@@ -154,11 +163,18 @@ const RootStack = createNativeStackNavigator({
 const Navigation = createStaticNavigation(RootStack);
 
 export default function App() {
+  useEffect(() => {
+    Asset.loadAsync(require('./assets/rain.jpg'));
+    Asset.loadAsync(require('./assets/mist.jpg'));
+    Asset.loadAsync(require('./assets/clear.jpg'));
+    Asset.loadAsync(require('./assets/clouds.jpg'));
+    Asset.loadAsync(require('./assets/snow.jpg'));
+  }, []);
   return (
     <QueryClientProvider client={queryClient}>
       <LocationProvider>
         <TempUnitProvider>
-          <Navigation />
+          <Navigation theme={defaultTheme} />
         </TempUnitProvider>
       </LocationProvider>
     </QueryClientProvider>
