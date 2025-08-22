@@ -13,6 +13,7 @@ import { FavoritesContext } from '../contexts/FavoritesContext';
 function FavoriteComp() {
   const { location } = useContext(LocationContext);
   const { favorites, setFavorites } = useContext(FavoritesContext);
+  const { recentFavorites, setRecentFavorites } = useContext(FavoritesContext);
   // const [favorite, setFavorite] = useState([]);
 
   const getFavorites = async () => {
@@ -37,13 +38,29 @@ function FavoriteComp() {
         );
         await AsyncStorage.setItem('favorites', jsonValue);
         setFavorites(favorites.filter((city) => city !== location.name));
+
+        const jsonValue2 = JSON.stringify([...recentFavorites, location.name]);
+        await AsyncStorage.setItem('recentFavorites', jsonValue2);
+        setRecentFavorites([...recentFavorites, location.name]);
       } catch (e) {
         console.error('Kunde inte spara favoriter', e);
       }
     } else {
-      const jsonValue = JSON.stringify([...favorites, location.name]);
-      await AsyncStorage.setItem('favorites', jsonValue);
-      setFavorites([...favorites, location.name]);
+      try {
+        const jsonValue = JSON.stringify([...favorites, location.name]);
+        await AsyncStorage.setItem('favorites', jsonValue);
+        setFavorites([...favorites, location.name]);
+
+        const jsonValue2 = JSON.stringify(
+          recentFavorites.filter((city) => city !== location.name)
+        );
+        await AsyncStorage.setItem('recentFavorites', jsonValue2);
+        setRecentFavorites(
+          recentFavorites.filter((city) => city !== location.name)
+        );
+      } catch (e) {
+        console.error('Kunde inte spara favoriter', e);
+      }
     }
   };
 

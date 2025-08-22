@@ -23,7 +23,7 @@ import starFalse from '../assets/star-false.png';
 function Favorites() {
   // const [favorites, setFavorites] = useState([]);
   const { favorites, setFavorites } = useContext(FavoritesContext);
-  const [removedFavorites, setRemovedFavorites] = useState([]);
+  const { recentFavorites, setRecentFavorites } = useContext(FavoritesContext);
   const { setLocation } = useContext(LocationContext);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -40,9 +40,20 @@ function Favorites() {
       console.error('error message: ', e);
     }
   };
+  const getRecentFavorites = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('recentFavorites');
+      if (jsonValue !== null) {
+        setRecentFavorites(JSON.parse(jsonValue));
+      }
+    } catch (e) {
+      console.error('error message: ', e);
+    }
+  };
 
   useEffect(() => {
     getFavorites();
+    getRecentFavorites();
   }, []);
 
   if (isLoading)
@@ -83,24 +94,37 @@ function Favorites() {
   }
 
   const removeFavorite = async (item) => {
-    console.log('pressed', item);
     try {
       const jsonValue = JSON.stringify(
         favorites.filter((city) => city !== item)
       );
       await AsyncStorage.setItem('favorites', jsonValue);
+
+      const jsonValue2 = JSON.stringify(
+        recentFavorites.filter((city) => city !== item)
+      );
+      await AsyncStorage.setItem('recentFavorites', jsonValue2);
+
       setFavorites(favorites.filter((city) => city !== item));
-      setRemovedFavorites([...removedFavorites, item]);
+      setRecentFavorites([...recentFavorites, item]);
     } catch (e) {
-      console.error('Kunde inte spara favoriter', e);
+      console.error('Kunde inte ta bort favoriter', e);
     }
   };
 
   const addFavorite = async (item) => {
-    const jsonValue = JSON.stringify([...favorites, item]);
-    await AsyncStorage.setItem('favorites', jsonValue);
-    setFavorites([...favorites, item]);
-    setRemovedFavorites(removedFavorites.filter((city) => city !== item));
+    try {
+      const jsonValue = JSON.stringify([...favorites, item]);
+      await AsyncStorage.setItem('favorites', jsonValue);
+
+      const jsonValue2 = JSON.stringify([...recentFavorites, item]);
+      await AsyncStorage.setItem('recentFavorites', jsonValue2);
+
+      setFavorites([...favorites, item]);
+      setRecentFavorites(recentFavorites.filter((city) => city !== item));
+    } catch (e) {
+      console.error('Kunde inte lägga till i favoriter', e);
+    }
   };
 
   return (
@@ -122,7 +146,7 @@ function Favorites() {
       />
       <Text style={styles.header}>Recent favorites</Text>
       <FlatList
-        data={removedFavorites}
+        data={recentFavorites}
         renderItem={({ item }) => (
           <View style={styles.cityContainer}>
             <TouchableWithoutFeedback onPress={() => goToFavorite(item)}>
