@@ -41,6 +41,7 @@ export default function HomeScreen() {
   const {
     data: currentWeather,
     isLoading,
+    isPending,
     error,
   } = useQuery({
     queryKey: ['currentWeather', location],
@@ -70,7 +71,7 @@ export default function HomeScreen() {
   const now = new Date();
   const currentTime = now.toLocaleTimeString();
 
-  if (isLoading)
+  if (isPending)
     return (
       <View
         style={{

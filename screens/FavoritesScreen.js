@@ -1,9 +1,11 @@
 import {
   Image,
   Pressable,
+  TouchableWithoutFeedback,
   StyleSheet,
   Text,
   View,
+  FlatList,
   ActivityIndicator,
 } from 'react-native';
 
@@ -13,11 +15,15 @@ import { useState, useEffect, useContext } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 import { LocationContext } from '../contexts/LocationContext';
+import { FavoritesContext } from '../contexts/FavoritesContext';
 
-import starTrue from '../assets/star-true.png';
+import starTrueBlue from '../assets/star-true-blue.png';
+import starFalse from '../assets/star-false.png';
 
 function Favorites() {
-  const [favorites, setFavorites] = useState([]);
+  // const [favorites, setFavorites] = useState([]);
+  const { favorites, setFavorites } = useContext(FavoritesContext);
+  const [removedFavorites, setRemovedFavorites] = useState([]);
   const { setLocation } = useContext(LocationContext);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -37,7 +43,7 @@ function Favorites() {
 
   useEffect(() => {
     getFavorites();
-  });
+  }, []);
 
   if (isLoading)
     return (
@@ -76,16 +82,59 @@ function Favorites() {
     }
   }
 
+  const removeFavorite = async (item) => {
+    console.log('pressed', item);
+    try {
+      const jsonValue = JSON.stringify(
+        favorites.filter((city) => city !== item)
+      );
+      await AsyncStorage.setItem('favorites', jsonValue);
+      setFavorites(favorites.filter((city) => city !== item));
+      setRemovedFavorites([...removedFavorites, item]);
+    } catch (e) {
+      console.error('Kunde inte spara favoriter', e);
+    }
+  };
+
+  const addFavorite = async (item) => {
+    const jsonValue = JSON.stringify([...favorites, item]);
+    await AsyncStorage.setItem('favorites', jsonValue);
+    setFavorites([...favorites, item]);
+    setRemovedFavorites(removedFavorites.filter((city) => city !== item));
+  };
+
   return (
     <View style={styles.container}>
-      {favorites.map((city) => (
-        <View key={city} style={styles.cityContainer}>
-          <Text style={{ color: 'white' }}>{city}</Text>
-          <Pressable onPress={() => goToFavorite(city)}>
-            <Image style={styles.starImg} source={starTrue} />
-          </Pressable>
-        </View>
-      ))}
+      <Text style={styles.header}>My favorites</Text>
+      <FlatList
+        data={favorites}
+        renderItem={({ item }) => (
+          <View style={styles.cityContainer}>
+            <TouchableWithoutFeedback onPress={() => goToFavorite(item)}>
+              <Text style={styles.cityText}>{item}</Text>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={() => removeFavorite(item)}>
+              <Image style={styles.starImg} source={starTrueBlue} />
+            </TouchableWithoutFeedback>
+          </View>
+        )}
+        keyExtractor={(item) => item}
+      />
+      <Text style={styles.header}>Recent favorites</Text>
+      <FlatList
+        data={removedFavorites}
+        renderItem={({ item }) => (
+          <View style={styles.cityContainer}>
+            <TouchableWithoutFeedback onPress={() => goToFavorite(item)}>
+              <Text style={styles.cityText}>{item}</Text>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={() => addFavorite(item)}>
+              <Image style={styles.starImg} source={starFalse} />
+            </TouchableWithoutFeedback>
+          </View>
+        )}
+        keyExtractor={(item) => item}
+      />
     </View>
   );
 }
@@ -96,13 +145,34 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#021d2cff',
+    padding: 10,
+  },
+  header: {
+    color: 'white',
+    fontSize: 24,
+    borderBottomWidth: 1,
+    borderColor: '#6183a3ff',
+    paddingBottom: 5,
+    marginBottom: 5,
+  },
+  cityText: {
+    fontSize: 18,
+    color: 'white',
   },
   cityContainer: {
-    borderWidth: 1,
-    borderColor: 'white',
+    // borderWidth: 1,
+    borderBottomWidth: 1,
+    // borderTopWidth: 1,
+    borderColor: '#6183a3ff',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: 5,
+    paddingTop: 5,
   },
   starImg: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
+    marginRight: 5,
   },
 });

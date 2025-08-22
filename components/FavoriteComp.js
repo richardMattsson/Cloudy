@@ -4,19 +4,22 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import starFalse from '../assets/star-false.png';
 import starTrue from '../assets/star-true.png';
+import starTrueBlue from '../assets/star-true-blue.png';
 
 import { useContext, useEffect, useState } from 'react';
 import { LocationContext } from '../contexts/LocationContext';
+import { FavoritesContext } from '../contexts/FavoritesContext';
 
 function FavoriteComp() {
   const { location } = useContext(LocationContext);
-  const [favorite, setFavorite] = useState([]);
+  const { favorites, setFavorites } = useContext(FavoritesContext);
+  // const [favorite, setFavorite] = useState([]);
 
   const getFavorites = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem('favorites');
       if (jsonValue !== null) {
-        setFavorite(JSON.parse(jsonValue));
+        setFavorites(JSON.parse(jsonValue));
       }
     } catch (e) {
       console.error('error message: ', e);
@@ -27,20 +30,20 @@ function FavoriteComp() {
   }, []);
 
   const saveFavorites = async () => {
-    if (favorite.indexOf(location.name) !== -1) {
+    if (favorites.indexOf(location.name) !== -1) {
       try {
         const jsonValue = JSON.stringify(
-          favorite.filter((city) => city !== location.name)
+          favorites.filter((city) => city !== location.name)
         );
         await AsyncStorage.setItem('favorites', jsonValue);
-        setFavorite(favorite.filter((city) => city !== location.name));
+        setFavorites(favorites.filter((city) => city !== location.name));
       } catch (e) {
         console.error('Kunde inte spara favoriter', e);
       }
     } else {
-      const jsonValue = JSON.stringify([...favorite, location.name]);
+      const jsonValue = JSON.stringify([...favorites, location.name]);
       await AsyncStorage.setItem('favorites', jsonValue);
-      setFavorite([...favorite, location.name]);
+      setFavorites([...favorites, location.name]);
     }
   };
 
@@ -51,7 +54,9 @@ function FavoriteComp() {
       <Image
         style={styles.starIcon}
         source={
-          favorite.some((city) => city === location.name) ? starTrue : starFalse
+          favorites.some((city) => city === location.name)
+            ? starTrueBlue
+            : starFalse
         }
       />
     </Pressable>
