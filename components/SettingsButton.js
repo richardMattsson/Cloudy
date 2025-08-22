@@ -10,6 +10,7 @@ import {
   View,
   Text,
 } from 'react-native';
+
 import { TempUnitContext } from '../contexts/TempUnitContext';
 import cog from '../assets/cog-white.png';
 

@@ -5,13 +5,12 @@ import SettingsButton from './components/SettingsButton';
 import FavoriteComp from './components/FavoriteComp';
 
 import { createStaticNavigation, DefaultTheme } from '@react-navigation/native';
-
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Image } from 'react-native';
-import calendar from './assets/calendar-alt-svgrepo-com.png';
 
+import { Image } from 'react-native';
+
+import calendar from './assets/calendar-alt-svgrepo-com.png';
 import sunVector from './assets/sun-svgrepo-com(3).png';
 import starTrue from './assets/star-true.png';
 
@@ -71,7 +70,6 @@ const HomeTabs = createBottomTabNavigator({
       screen: FiveDayForecast,
       options: {
         headerRight: () => <SettingsButton />,
-        // headerLeft: () => <FavoriteComp />,
         title: '5-day forecast',
         headerTitleAlign: 'center',
         tabBarIcon: ({ color, size }) => (
@@ -103,7 +101,6 @@ const HomeTabs = createBottomTabNavigator({
       screen: Favorites,
       options: {
         headerRight: () => <SettingsButton />,
-        // headerLeft: () => <FavoriteComp />,
         title: 'Favorites',
         headerTitleAlign: 'center',
         tabBarIcon: ({ color, size }) => (
@@ -134,7 +131,6 @@ const HomeTabs = createBottomTabNavigator({
 });
 
 const RootStack = createNativeStackNavigator({
-  // initialRouteName: 'Current',
   screenOptions: {
     headerStyle: { backgroundColor: '#021d2cff' },
   },
@@ -147,12 +143,6 @@ const RootStack = createNativeStackNavigator({
         headerLeft: () => <FavoriteComp />,
       },
     },
-    // FiveDayForecast: {
-    //   screen: FiveDayForecast,
-    //   options: {
-    //     title: '5-day forecast',
-    //   },
-    // },
   },
 });
 const Navigation = createStaticNavigation(RootStack);

@@ -8,20 +8,22 @@ import {
   View,
   ActivityIndicator,
   ImageBackground,
+  Platform,
 } from 'react-native';
 
-import { useContext, useEffect } from 'react';
 import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
+
+import { useContext } from 'react';
 import { LocationContext } from '../contexts/LocationContext';
 import { TempUnitContext } from '../contexts/TempUnitContext';
+
 import rain from '../assets/rain.jpg';
 import mist from '../assets/mist.jpg';
 import clear from '../assets/clear.jpg';
 import clouds from '../assets/clouds.jpg';
 import snow from '../assets/snow.jpg';
 import thunderstorm from '../assets/thunderstorm.jpg';
-
-import { useQuery } from '@tanstack/react-query';
 
 import * as SplashScreen from 'expo-splash-screen';
 
@@ -40,7 +42,6 @@ export default function HomeScreen() {
 
   const {
     data: currentWeather,
-    isLoading,
     isPending,
     error,
   } = useQuery({
@@ -70,6 +71,7 @@ export default function HomeScreen() {
   };
   const now = new Date();
   const currentTime = now.toLocaleTimeString();
+  // const currentTime = moment().format('MMMM Do YYYY, h:mm:ss a');
 
   if (isPending)
     return (
@@ -93,7 +95,11 @@ export default function HomeScreen() {
   if (currentWeather) {
     weatherData = [
       `${location.name}, ${currentWeather.sys.country}`,
-      currentTime,
+      Platform.OS === 'android'
+        ? `${Number(currentTime.split(':')[0]) + 2}:${
+            currentTime.split(':')[1]
+          }:${currentTime.split(':')[2]}`
+        : currentTime,
       currentWeather.weather[0].main,
       tempUnit === 'celsius'
         ? (currentWeather.main.temp - 273.15).toFixed(1) + ' C°'

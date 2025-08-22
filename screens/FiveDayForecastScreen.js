@@ -9,24 +9,17 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
-import { useContext } from 'react';
 import axios from 'axios';
+import { LineChart } from 'react-native-gifted-charts';
+import { useQuery } from '@tanstack/react-query';
 
+import { useContext } from 'react';
 import { LocationContext } from '../contexts/LocationContext';
 import { TempUnitContext } from '../contexts/TempUnitContext';
-
-import { LineChart } from 'react-native-gifted-charts';
-
-import { useQuery } from '@tanstack/react-query';
 
 export default function FiveDayForecast() {
   const { location } = useContext(LocationContext);
   const { tempUnit } = useContext(TempUnitContext);
-
-  // const [fivedaysforecast, setFivedaysforecast] = useState(null);
-  // const [tempData, setTempData] = useState([]);
-  // const [windData, setWindData] = useState([]);
-  // const [gustData, setGustData] = useState([]);
 
   async function getForecast(location) {
     const response = await axios.get(
@@ -191,7 +184,7 @@ export default function FiveDayForecast() {
           <View style={styles.container}>
             <StatusBar style="light" />
             <Text style={[styles.header, styles.textStyle]}>
-              {fivedaysforecast.city.name}
+              {location.name}
             </Text>
             <View style={styles.wrapper}>
               <LineChart

@@ -1,12 +1,11 @@
-import { Pressable, Image, StyleSheet, Text } from 'react-native';
+import { Pressable, Image, StyleSheet } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import starFalse from '../assets/star-false.png';
-import starTrue from '../assets/star-true.png';
 import starTrueBlue from '../assets/star-true-blue.png';
 
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { LocationContext } from '../contexts/LocationContext';
 import { FavoritesContext } from '../contexts/FavoritesContext';
 
@@ -14,21 +13,6 @@ function FavoriteComp() {
   const { location } = useContext(LocationContext);
   const { favorites, setFavorites } = useContext(FavoritesContext);
   const { recentFavorites, setRecentFavorites } = useContext(FavoritesContext);
-  // const [favorite, setFavorite] = useState([]);
-
-  const getFavorites = async () => {
-    try {
-      const jsonValue = await AsyncStorage.getItem('favorites');
-      if (jsonValue !== null) {
-        setFavorites(JSON.parse(jsonValue));
-      }
-    } catch (e) {
-      console.error('error message: ', e);
-    }
-  };
-  useEffect(() => {
-    getFavorites();
-  }, []);
 
   const saveFavorites = async () => {
     if (favorites.indexOf(location.name) !== -1) {
@@ -63,8 +47,6 @@ function FavoriteComp() {
       }
     }
   };
-
-  // }
 
   return (
     <Pressable onPress={saveFavorites}>

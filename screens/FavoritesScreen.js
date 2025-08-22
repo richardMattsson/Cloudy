@@ -1,17 +1,18 @@
 import {
   Image,
-  Pressable,
   TouchableWithoutFeedback,
   StyleSheet,
   Text,
   View,
   FlatList,
   ActivityIndicator,
+  Pressable,
 } from 'react-native';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { useState, useEffect, useContext } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { useState, useContext } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 import { LocationContext } from '../contexts/LocationContext';
@@ -21,7 +22,6 @@ import starTrueBlue from '../assets/star-true-blue.png';
 import starFalse from '../assets/star-false.png';
 
 function Favorites() {
-  // const [favorites, setFavorites] = useState([]);
   const { favorites, setFavorites } = useContext(FavoritesContext);
   const { recentFavorites, setRecentFavorites } = useContext(FavoritesContext);
   const { setLocation } = useContext(LocationContext);
@@ -51,10 +51,8 @@ function Favorites() {
     }
   };
 
-  useEffect(() => {
-    getFavorites();
-    getRecentFavorites();
-  }, []);
+  getFavorites();
+  getRecentFavorites();
 
   if (isLoading)
     return (
@@ -95,17 +93,14 @@ function Favorites() {
 
   const removeFavorite = async (item) => {
     try {
-      const jsonValue = JSON.stringify(
+      const jsonFavorites = JSON.stringify(
         favorites.filter((city) => city !== item)
       );
-      await AsyncStorage.setItem('favorites', jsonValue);
-
-      const jsonValue2 = JSON.stringify(
-        recentFavorites.filter((city) => city !== item)
-      );
-      await AsyncStorage.setItem('recentFavorites', jsonValue2);
-
+      await AsyncStorage.setItem('favorites', jsonFavorites);
       setFavorites(favorites.filter((city) => city !== item));
+
+      const jsonRecentFavorites = JSON.stringify([...recentFavorites, item]);
+      await AsyncStorage.setItem('recentFavorites', jsonRecentFavorites);
       setRecentFavorites([...recentFavorites, item]);
     } catch (e) {
       console.error('Kunde inte ta bort favoriter', e);
@@ -114,16 +109,30 @@ function Favorites() {
 
   const addFavorite = async (item) => {
     try {
-      const jsonValue = JSON.stringify([...favorites, item]);
-      await AsyncStorage.setItem('favorites', jsonValue);
-
-      const jsonValue2 = JSON.stringify([...recentFavorites, item]);
-      await AsyncStorage.setItem('recentFavorites', jsonValue2);
-
+      const jsonFavorites = JSON.stringify([...favorites, item]);
+      await AsyncStorage.setItem('favorites', jsonFavorites);
       setFavorites([...favorites, item]);
+
+      const jsonRecentFavorites = JSON.stringify(
+        recentFavorites.filter((city) => city !== item)
+      );
+      await AsyncStorage.setItem('recentFavorites', jsonRecentFavorites);
+
       setRecentFavorites(recentFavorites.filter((city) => city !== item));
     } catch (e) {
       console.error('Kunde inte lägga till i favoriter', e);
+    }
+  };
+
+  const removeFromRecent = async (item) => {
+    try {
+      const jsonRecentFavorites = JSON.stringify(
+        recentFavorites.filter((city) => city !== item)
+      );
+      await AsyncStorage.setItem('recentFavorites', jsonRecentFavorites);
+      setRecentFavorites(recentFavorites.filter((city) => city !== item));
+    } catch (e) {
+      console.error('Det gick inte att ta bort staden', e);
     }
   };
 
@@ -152,6 +161,12 @@ function Favorites() {
             <TouchableWithoutFeedback onPress={() => goToFavorite(item)}>
               <Text style={styles.cityText}>{item}</Text>
             </TouchableWithoutFeedback>
+            <Pressable
+              style={styles.removeButton}
+              onPress={() => removeFromRecent(item)}
+            >
+              <Text style={styles.removeButtonText}>remove</Text>
+            </Pressable>
             <TouchableWithoutFeedback onPress={() => addFavorite(item)}>
               <Image style={styles.starImg} source={starFalse} />
             </TouchableWithoutFeedback>
@@ -184,9 +199,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   cityContainer: {
-    // borderWidth: 1,
     borderBottomWidth: 1,
-    // borderTopWidth: 1,
     borderColor: '#6183a3ff',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -198,5 +211,17 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     marginRight: 5,
+  },
+  removeButton: {
+    borderRadius: 5,
+    padding: 5,
+    paddingLeft: 10,
+    paddingRight: 10,
+
+    borderWidth: 1,
+    borderColor: 'red',
+  },
+  removeButtonText: {
+    color: 'white',
   },
 });
