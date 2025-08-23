@@ -12,7 +12,7 @@ import {
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 import { LocationContext } from '../contexts/LocationContext';
@@ -50,9 +50,10 @@ function Favorites() {
       console.error('error message: ', e);
     }
   };
-
-  getFavorites();
-  getRecentFavorites();
+  useEffect(() => {
+    getFavorites();
+    getRecentFavorites();
+  }, []);
 
   if (isLoading)
     return (
@@ -73,7 +74,7 @@ function Favorites() {
     setIsLoading(true);
     try {
       const response = await axios.get(
-        `https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=1&language=en&format=json`
+        `https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=1&language=sv&format=json`
       );
 
       if (response.data) {
