@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
 
     borderWidth: 1,
-    borderColor: 'red',
+    borderColor: 'grey',
   },
   removeButtonText: {
     color: 'white',

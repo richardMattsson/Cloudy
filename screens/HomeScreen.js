@@ -12,6 +12,9 @@ import {
 } from 'react-native';
 
 import axios from 'axios';
+import moment from 'moment';
+import 'moment/src/locale/en-gb';
+
 import { useQuery } from '@tanstack/react-query';
 
 import { useContext } from 'react';
@@ -71,7 +74,8 @@ export default function HomeScreen() {
   };
   const now = new Date();
   const currentTime = now.toLocaleTimeString();
-  // const currentTime = moment().format('MMMM Do YYYY, h:mm:ss a');
+
+  // const currentTime = moment().format('LT');
 
   if (isPending)
     return (
@@ -98,8 +102,8 @@ export default function HomeScreen() {
       Platform.OS === 'android'
         ? `${Number(currentTime.split(':')[0]) + 2}:${
             currentTime.split(':')[1]
-          }:${currentTime.split(':')[2]}`
-        : currentTime,
+          }`
+        : `${currentTime.split(':')[0]}:${currentTime.split(':')[1]}`,
       currentWeather.weather[0].main,
       tempUnit === 'celsius'
         ? (currentWeather.main.temp - 273.15).toFixed(1) + ' C°'
