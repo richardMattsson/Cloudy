@@ -148,7 +148,10 @@ function Favorites() {
               <Text style={styles.cityText}>{item}</Text>
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={() => removeFavorite(item)}>
-              <Image style={styles.starImg} source={starTrueBlue} />
+              <Image
+                style={[styles.starImg, { marginRight: 15 }]}
+                source={starTrueBlue}
+              />
             </TouchableWithoutFeedback>
           </View>
         )}
@@ -160,17 +163,29 @@ function Favorites() {
         renderItem={({ item }) => (
           <View style={styles.cityContainer}>
             <TouchableWithoutFeedback onPress={() => goToFavorite(item)}>
-              <Text style={styles.cityText}>{item}</Text>
+              <Text style={[styles.cityText, { width: 200 }]}>{item}</Text>
             </TouchableWithoutFeedback>
-            <Pressable
-              style={styles.removeButton}
-              onPress={() => removeFromRecent(item)}
+            <View
+              style={{
+                // borderWidth: 1,
+                // borderColor: 'white',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginRight: 5,
+                width: 150,
+              }}
             >
-              <Text style={styles.removeButtonText}>remove</Text>
-            </Pressable>
-            <TouchableWithoutFeedback onPress={() => addFavorite(item)}>
-              <Image style={styles.starImg} source={starFalse} />
-            </TouchableWithoutFeedback>
+              <Pressable
+                style={styles.removeButton}
+                onPress={() => removeFromRecent(item)}
+              >
+                <Text style={styles.removeButtonText}>remove</Text>
+              </Pressable>
+              <TouchableWithoutFeedback onPress={() => addFavorite(item)}>
+                <Image style={styles.starImg} source={starFalse} />
+              </TouchableWithoutFeedback>
+            </View>
           </View>
         )}
         keyExtractor={(item) => item}
@@ -185,7 +200,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#021d2cff',
-    padding: 10,
+    padding: 20,
   },
   header: {
     color: 'white',
@@ -211,7 +226,7 @@ const styles = StyleSheet.create({
   starImg: {
     width: 40,
     height: 40,
-    marginRight: 5,
+    marginRight: 15,
   },
   removeButton: {
     borderRadius: 5,
